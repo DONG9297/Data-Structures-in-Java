@@ -38,11 +38,12 @@ public class Array<E> {
     }
 
     public void add(int index, E e) {
-        if (size == data.length)
-            throw new IllegalArgumentException("AddLast failed. Array is full.");
 
         if (index < 0 || index > data.length)
             throw new IllegalArgumentException("AddLast failed. Require index >= 0 and index <= size");
+
+        if (size == data.length)
+            resize(2 * data.length);
 
         for (int i = size - 1; i >= index; i--) {
             data[i + 1] = data[i];
@@ -87,6 +88,8 @@ public class Array<E> {
             data[i = 1] = data[i];
         size--;
         data[size] = null; //Not necessary. It's a loitering object.
+        if (size == data.length / 4 && data.length / 2 != 0)
+            resize(data.length / 2);
         return ret;
     }
 
@@ -119,13 +122,20 @@ public class Array<E> {
         return res.toString();
     }
 
+    private void resize(int newCapacity) {
+        E[] newData = (E[]) new Object[newCapacity];
+        for (int i = 0; i < data.length; i++)
+            newData[i] = data[i];
+        data = newData;
+    }
+
     public static void main(String[] args) {
         Array<Integer> arr = new Array<Integer>(20);
-        for(int i=0;i<10;i++)
+        for (int i = 0; i < 10; i++)
             arr.addLast(i);
         System.out.println(arr);
 
-        arr.add(1,100);
+        arr.add(1, 100);
         System.out.println(arr);
 
         arr.addFirst(-1);
